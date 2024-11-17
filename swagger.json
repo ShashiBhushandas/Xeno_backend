@@ -1,0 +1,190 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "version": "1.0.0",
+      "title": "CRM Backend APIs",
+      "description": "APIs for data ingestion, audience management, and campaigns."
+    },
+    "host": "localhost:5001",
+    "basePath": "/api",
+    "schemes": ["http"],
+    "paths": {
+      "/data-ingestion/customers": {
+        "get": {
+          "summary": "Get all customers",
+          "description": "Fetch the list of all customers.",
+          "responses": {
+            "200": {
+              "description": "Customers retrieved successfully.",
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "_id": { "type": "string", "example": "64123cbd67d91234abcd5678" },
+                    "name": { "type": "string", "example": "John Doe" },
+                    "email": { "type": "string", "example": "john.doe@example.com" },
+                    "totalSpending": { "type": "number", "example": 15000 },
+                    "visits": { "type": "number", "example": 5 },
+                    "lastVisit": { "type": "string", "format": "date", "example": "2024-11-01T00:00:00.000Z" }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal server error."
+            }
+          }
+        },
+        "post": {
+          "summary": "Add a new customer",
+          "description": "Add a new customer to the database.",
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "description": "Customer details",
+              "required": true,
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string", "example": "John Doe" },
+                  "email": { "type": "string", "example": "john.doe@example.com" },
+                  "totalSpending": { "type": "number", "example": 15000 },
+                  "visits": { "type": "number", "example": 5 },
+                  "lastVisit": { "type": "string", "format": "date", "example": "2024-11-01" }
+                }
+              }
+            }
+          ],
+          "responses": {
+            "201": {
+              "description": "Customer created successfully.",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": { "type": "string", "example": "Customer added successfully." }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal server error."
+            }
+          }
+        }
+      },
+      "/campaign-management/audience-segment": {
+        "post": {
+          "summary": "Create Audience Segment",
+          "description": "Create a new audience segment based on conditions.",
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "description": "Audience segment details",
+              "required": true,
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string", "example": "High Spenders" },
+                  "conditions": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "field": { "type": "string", "example": "totalSpending" },
+                        "operator": { "type": "string", "example": ">" },
+                        "value": { "type": "number", "example": 10000 }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "responses": {
+            "201": {
+              "description": "Audience segment created successfully.",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": { "type": "string", "example": "Audience segment created successfully" },
+                  "audienceSize": { "type": "integer", "example": 150 }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal server error."
+            }
+          }
+        }
+      },
+      "/campaign-management/campaigns": {
+        "get": {
+          "summary": "Get Campaign History",
+          "description": "Fetch the list of all campaigns created.",
+          "responses": {
+            "200": {
+              "description": "Campaigns retrieved successfully.",
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "_id": { "type": "string", "example": "64123bcdb7e12345abcd6789" },
+                    "name": { "type": "string", "example": "Holiday Campaign" },
+                    "audience": {
+                      "type": "array",
+                      "items": { "type": "string", "example": "64123cbd67d91234abcd5678" }
+                    },
+                    "createdAt": { "type": "string", "format": "date-time", "example": "2024-11-15T10:00:00Z" }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal server error."
+            }
+          }
+        }
+      },
+      "/campaign-management/send-message": {
+        "post": {
+          "summary": "Send Messages",
+          "description": "Send personalized messages to the audience in a campaign.",
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "description": "Campaign ID",
+              "required": true,
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "campaignId": { "type": "string", "example": "64123bcdb7e12345abcd6789" }
+                }
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Messages sent successfully.",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": { "type": "string", "example": "Messages sent successfully and queued for delivery processing." }
+                }
+              }
+            },
+            "404": {
+              "description": "Campaign not found."
+            },
+            "500": {
+              "description": "Internal server error."
+            }
+          }
+        }
+      }
+    }
+  }
+  
